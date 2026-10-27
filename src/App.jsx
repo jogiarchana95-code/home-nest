@@ -1,363 +1,602 @@
 import { useState } from 'react'
-import { Link, Route, Routes, useLocation } from 'react-router-dom'
+import { Link, Route, Routes, useLocation, useNavigate } from 'react-router-dom'
 import {
-  Apple, ArrowDown, ArrowRight, Bath, BedDouble, CalendarDays,
-  Check, ChevronDown, CircleHelp, Download, Heart,
-  Eye, EyeOff, Home as HomeIcon, IndianRupee, MapPin, Menu, MessageCircle, Search,
-  Settings, ShieldCheck, SquareCheck, UserRound, X,
+  Activity,
+  ArrowRight,
+  Check,
+  CheckCircle2,
+  Cloud,
+  Copy,
+  Headphones,
+  Mail,
+  MailWarning,
+  Menu,
+  Shield,
+  UsersRound,
+  MonitorCog,
+  ShieldCheck,
+  X,
 } from 'lucide-react'
 import './App.css'
 
-const homeHeroImage = '/assets/home-hero.png'
-const loginHouseImage = '/assets/login-house.png'
+const features = [
+  {
+    title: 'Fast response',
+    description: 'Get timely help when your team needs IT support.',
+    icon: Headphones,
+    visual: 'response-visual',
+    label: 'Support that keeps you moving',
+    image: '/assets/it-fast-support.jpg',
+  },
+  {
+    title: 'Secure systems',
+    description: 'Keep your devices, data, and people better protected.',
+    icon: ShieldCheck,
+    visual: 'security-visual',
+    label: 'Your security, always on',
+    image: '/assets/it-cybersecurity.jpg',
+  },
+  {
+    title: 'Cloud ready',
+    description: 'Work securely and flexibly from any location.',
+    icon: Cloud,
+    visual: 'cloud-visual',
+    label: 'Work from anywhere',
+    image: '/assets/it-cloud.jpg',
+  },
+  {
+    title: 'Expert guidance',
+    description: 'Make confident technology decisions with clear advice.',
+    icon: MonitorCog,
+    visual: 'guidance-visual',
+    label: 'A clear plan for what is next',
+    image: '/assets/it-consulting.jpg',
+  },
+  {
+    title: 'Proactive monitoring',
+    description: 'Identify potential issues before they disrupt your work.',
+    icon: Activity,
+    visual: 'monitoring-visual',
+    label: 'Your systems are looking healthy',
+    image: '/assets/it-monitoring.jpg',
+  },
+]
 
-const properties = [
+const steps = [
   {
-    id: 'villa',
-    name: '3 BHK Villa',
-    location: 'Whitefield, Bangalore',
-    price: '₹ 25,000',
-    period: '/month',
-    beds: 3,
-    baths: 3,
-    area: '2,400 sqft',
-    badge: 'For Sale',
-    image: 'https://images.unsplash.com/photo-1613490493576-7fde63acd811?auto=format&fit=crop&w=1000&q=85',
+    title: 'Listen',
+    description: 'We learn about your business and technology needs.',
   },
   {
-    id: 'apartment',
-    name: '2 BHK Apartment',
-    location: 'Indiranagar, Bangalore',
-    price: '₹ 18,000',
-    period: '/month',
-    beds: 2,
-    baths: 2,
-    area: '1,250 sqft',
-    badge: 'For Rent',
-    image: 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1000&q=85',
+    title: 'Improve',
+    description: 'We recommend practical solutions that make a difference.',
   },
   {
-    id: 'family-home',
-    name: '4 BHK Family Home',
-    location: 'Sarjapur Road, Bangalore',
-    price: '₹ 38,000',
-    period: '/month',
-    beds: 4,
-    baths: 3,
-    area: '2,800 sqft',
-    badge: 'For Sale',
-    image: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1000&q=85',
-  },
-  {
-    id: 'modern-flat',
-    name: '2 BHK Modern Flat',
-    location: 'Koramangala, Bangalore',
-    price: '₹ 20,000',
-    period: '/month',
-    beds: 2,
-    baths: 2,
-    area: '1,400 sqft',
-    badge: 'For Rent',
-    image: 'https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?auto=format&fit=crop&w=1000&q=85',
+    title: 'Support',
+    description: 'We stay available to help your team move forward.',
   },
 ]
 
 function Header() {
   const [menuOpen, setMenuOpen] = useState(false)
-  const location = useLocation()
-  const isDashboard = location.pathname === '/dashboard'
+  const { pathname } = useLocation()
 
-  if (isDashboard) return null
+  function closeMenu() {
+    setMenuOpen(false)
+  }
 
   return (
     <header className="site-header">
-      <Link to="/" className="brand" aria-label="Home Nest home">
-        <span className="brand-mark"><HomeIcon size={25} fill="currentColor" /></span>
-        <span className="brand-copy"><strong>Home Nest</strong><small>Find Your Perfect Space</small></span>
+      <Link className="brand" to="/" aria-label="Stackly IT home" onClick={closeMenu}>
+        <Brand />
       </Link>
-      <button className="mobile-menu-toggle" aria-label="Toggle navigation" onClick={() => setMenuOpen(!menuOpen)}>
+      <button
+        className="menu-toggle"
+        type="button"
+        aria-label={menuOpen ? 'Close navigation' : 'Open navigation'}
+        aria-expanded={menuOpen}
+        onClick={() => setMenuOpen(!menuOpen)}
+      >
         {menuOpen ? <X size={21} /> : <Menu size={21} />}
       </button>
-      <nav className={menuOpen ? 'main-nav is-open' : 'main-nav'}>
-        <Link to="/" onClick={() => setMenuOpen(false)}>Home</Link>
-        <a href="/#properties" onClick={() => setMenuOpen(false)}>Properties</a>
-        <a href="/#about" onClick={() => setMenuOpen(false)}>About</a>
-        <a href="/#services" onClick={() => setMenuOpen(false)}>Services</a>
-        <a href="/#contact" onClick={() => setMenuOpen(false)}>Contact</a>
+      <nav className={menuOpen ? 'main-nav is-open' : 'main-nav'} aria-label="Main navigation">
+        <Link className={pathname === '/' ? 'active' : ''} to="/" onClick={closeMenu}>Home</Link>
+        <Link className={pathname === '/services' ? 'active' : ''} to="/services" onClick={closeMenu}>Services</Link>
+        <Link className={pathname === '/about' ? 'active' : ''} to="/about" onClick={closeMenu}>About Us</Link>
+        <Link className={pathname === '/enquiry' ? 'active' : ''} to="/enquiry" onClick={closeMenu}>Enquiry</Link>
       </nav>
-      <div className="header-actions">
-        <Link to="/dashboard" className="icon-button" aria-label="Favorites"><Heart size={20} /></Link>
-        <Link to="/login" className="button button-outline button-small">Login</Link>
-        <Link to="/login" className="button button-primary button-small">Sign Up</Link>
-      </div>
     </header>
   )
 }
 
-function PropertyCard({ property, compact = false }) {
-  const [saved, setSaved] = useState(false)
-  return (
-    <article className={`property-card${compact ? ' property-card-compact' : ''}`}>
-      <Link className="property-image-link" to={`/properties/${property.id}`}>
-        <img src={property.image} alt={property.name} className="property-image" />
-        <span className={`property-badge ${property.badge === 'For Rent' ? 'badge-rent' : ''}`}>{property.badge}</span>
-      </Link>
-      <div className="property-card-content">
-        <div className="property-title-row">
-          <div>
-            <Link to={`/properties/${property.id}`} className="property-title">{property.name}</Link>
-            <span className="property-location"><MapPin size={12} />{property.location}</span>
-          </div>
-          <button className={`save-button${saved ? ' is-saved' : ''}`} onClick={() => setSaved(!saved)} aria-label={saved ? 'Remove from favorites' : 'Add to favorites'}>
-            <Heart size={16} fill={saved ? 'currentColor' : 'none'} />
-          </button>
-        </div>
-        <div className="property-facts">
-          <span><BedDouble size={13} />{property.beds} Beds</span>
-          <span><Bath size={13} />{property.baths} Baths</span>
-          <span><ArrowDown size={13} />{property.area}</span>
-        </div>
-        <div className="property-card-bottom">
-          <span className="price">{property.price}<small>{property.period}</small></span>
-          <Link to={`/properties/${property.id}`} className="round-arrow" aria-label={`View ${property.name}`}><ArrowRight size={15} /></Link>
-        </div>
-      </div>
-    </article>
-  )
-}
-
-function SearchPanel() {
-  const [query, setQuery] = useState('')
-  const [type, setType] = useState('Any Type')
-  const [budget, setBudget] = useState('Any Price')
-  return (
-    <form className="search-panel" onSubmit={(event) => { event.preventDefault(); document.getElementById('properties')?.scrollIntoView({ behavior: 'smooth' }) }}>
-      <label className="search-field search-location">
-        <MapPin size={16} />
-        <span><small>Location</small><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Enter city, area or landmark" /></span>
-      </label>
-      <label className="search-field">
-        <HomeIcon size={16} />
-        <span><small>Property Type</small><select value={type} onChange={(event) => setType(event.target.value)}><option>Any Type</option><option>Villa</option><option>Apartment</option><option>House</option></select></span>
-        <ChevronDown size={14} />
-      </label>
-      <label className="search-field">
-        <IndianRupee size={18} />
-        <span><small>Price Range</small><select value={budget} onChange={(event) => setBudget(event.target.value)}><option>Any Price</option><option>Under ₹20,000</option><option>₹20,000 – ₹35,000</option><option>₹35,000+</option></select></span>
-        <ChevronDown size={14} />
-      </label>
-      <label className="search-field">
-        <BedDouble size={16} />
-        <span><small>Bedrooms</small><select defaultValue="Any"><option>Any</option><option>1+</option><option>2+</option><option>3+</option><option>4+</option></select></span>
-        <ChevronDown size={14} />
-      </label>
-      <button className="button button-primary search-submit" type="submit"><Search size={16} /> Search</button>
-    </form>
-  )
-}
-
-function HomePage() {
-  const [activeCategory, setActiveCategory] = useState('All')
-  const categories = [
-    { name: 'Apartments', count: '1,250+ Properties', image: properties[1].image },
-    { name: 'Villas', count: '850+ Properties', image: properties[0].image },
-    { name: 'Houses', count: '1,100+ Properties', image: properties[2].image },
-    { name: 'Flats', count: '950+ Properties', image: properties[3].image },
-    { name: 'Commercial', count: '520+ Properties', image: 'https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=500&q=80' },
-  ]
-  const filteredProperties = activeCategory === 'All' ? properties : properties.filter((property) => {
-    if (activeCategory === 'Apartments' || activeCategory === 'Flats') return property.name.toLowerCase().includes('apartment') || property.name.toLowerCase().includes('flat')
-    if (activeCategory === 'Villas') return property.name.toLowerCase().includes('villa')
-    if (activeCategory === 'Houses') return property.name.toLowerCase().includes('home')
-    return true
-  })
-
+function Brand({ footer = false }) {
   return (
     <>
-      <section className="hero">
-        <img className="hero-design-image" src={homeHeroImage} alt="Your dream home awaits. Find the perfect property for a better tomorrow." />
-        <div className="hero-content">
-          <span className="eyebrow eyebrow-light">Your dream home awaits</span>
-          <h1>Find the Perfect Property<br />for a Better Tomorrow</h1>
-          <p>Explore thousands of properties for sale and rent. Whether you're buying, selling, or renting, we make it simple.</p>
-        </div>
-        <SearchPanel />
-      </section>
-      <main className="home-content">
-        <section className="benefit-row" id="services" aria-label="Our services">
-          <div className="benefit"><span className="benefit-icon icon-blue"><ShieldCheck size={18} /></span><span><strong>Verified Listings</strong><small>100% verified properties<br />for your peace of mind</small></span></div>
-          <div className="benefit"><span className="benefit-icon icon-green"><Check size={18} /></span><span><strong>Secure Transactions</strong><small>Trusted payment process<br />for a smooth experience</small></span></div>
-          <div className="benefit"><span className="benefit-icon icon-purple"><UserRound size={18} /></span><span><strong>Expert Support</strong><small>Personalized guidance<br />every step of the way</small></span></div>
-          <div className="benefit"><span className="benefit-icon icon-gold"><HomeIcon size={18} /></span><span><strong>Best Deals</strong><small>The best price and<br />exclusive offers</small></span></div>
-        </section>
-
-        <section className="section-block" id="properties">
-          <div className="section-heading">
-            <div><span className="eyebrow">Handpicked for you</span><h2>Featured Properties</h2><p>Find a place you’ll love to call home.</p></div>
-            <Link to="/properties/villa" className="text-link">View All <ArrowRight size={15} /></Link>
-          </div>
-          <div className="category-pills">
-            {['All', 'Apartments', 'Villas', 'Houses'].map((category) => <button key={category} className={activeCategory === category ? 'category-pill active' : 'category-pill'} onClick={() => setActiveCategory(category)}>{category}</button>)}
-          </div>
-          <div className="property-grid">
-            {filteredProperties.map((property) => <PropertyCard key={property.id} property={property} compact />)}
-          </div>
-        </section>
-
-        <section className="promo-grid" id="about">
-          <div className="promo-card">
-            <div className="promo-copy"><span className="eyebrow">New launch</span><h2>Luxury Homes for a<br />Modern Lifestyle</h2><p>Premium villas & apartments in prime locations.</p><Link className="button button-primary button-small" to="/properties/villa">Explore Now <ArrowRight size={13} /></Link></div>
-            <img src="https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=850&q=85" alt="Bright modern living room" />
-          </div>
-          <div className="help-card"><span className="help-avatar"><CircleHelp size={25} /></span><div><strong>Need help?</strong><p>We’re here to help you find your perfect home.</p><a className="button button-outline button-small" href="mailto:hello@homenest.example">Contact Us</a></div></div>
-        </section>
-
-        <section className="section-block category-section">
-          <div className="section-heading section-heading-left"><div><h2>Explore Properties by Categories</h2><p>Find the right property for your needs.</p></div></div>
-          <div className="category-grid">{categories.map((category) => <button key={category.name} className="category-card" onClick={() => { setActiveCategory(category.name); document.getElementById('properties')?.scrollIntoView({ behavior: 'smooth' }) }}><img src={category.image} alt="" /><span><strong>{category.name}</strong><small>{category.count}</small></span><ArrowRight size={16} /></button>)}</div>
-        </section>
-      </main>
-      <Footer />
+      <span className="brand-symbol" aria-hidden="true">
+        <svg viewBox="0 0 40 40">
+          <path d="M27.8 11.5H17.2a5.7 5.7 0 0 0 0 11.4h5.6a5.7 5.7 0 0 1 0 11.4H11.8" />
+          <path d="M12.2 5.7v5.8h5.8M27.8 34.3v-5.8H22" />
+        </svg>
+      </span>
+      <span className={footer ? 'brand-name footer-brand-name' : 'brand-name'}>
+        STACKLY <span>IT</span>
+        {footer && <small>TECHNOLOGY SOLUTIONS</small>}
+      </span>
     </>
   )
 }
 
-function Footer() {
-  return <footer className="site-footer" id="contact"><Link to="/" className="brand"><span className="brand-mark"><HomeIcon size={22} fill="currentColor" /></span><span className="brand-copy"><strong>Home Nest</strong><small>Find Your Perfect Space</small></span></Link><p>Make yourself at home. Find the space that feels just right.</p><span>© 2025 Home Nest</span></footer>
-}
-
-function LoginPage() {
-  const [showPassword, setShowPassword] = useState(false)
-  const [notice, setNotice] = useState('')
+function SupportOverview() {
   return (
-    <main className="login-page">
-      <section className="login-form-side">
-        <div className="login-form-wrap">
-          <h1>Welcome Back!</h1>
-          <p className="login-intro">Sign in to your account to continue exploring amazing properties.</p>
-          <form className="login-form" onSubmit={(event) => { event.preventDefault(); setNotice('Sign-in is not connected yet. Please connect your authentication service to continue.') }}>
-            <label>Email or Mobile Number<input type="text" placeholder="Enter your email or mobile number" required /></label>
-            <label>Password<div className="password-input"><input type={showPassword ? 'text' : 'password'} placeholder="Enter your password" required /><button type="button" className="password-toggle" onClick={() => setShowPassword(!showPassword)} aria-label={showPassword ? 'Hide password' : 'Show password'}>{showPassword ? <EyeOff size={17} /> : <Eye size={17} />}</button></div></label>
-            <div className="form-options"><label className="remember-label"><input type="checkbox" /> Remember me</label><a href="#forgot" onClick={(event) => { event.preventDefault(); setNotice('Password reset is not connected yet. Please contact support.') }}>Forgot password?</a></div>
-            <button type="submit" className="button button-primary login-submit">Login</button>
-            {notice && <p className="form-notice" role="status">{notice}</p>}
-          </form>
-          <div className="or-divider"><span>Or continue with</span></div>
-          <div className="social-login"><button onClick={() => setNotice('Google sign-in is not connected yet.')}><span className="google-mark">G</span><span>Google</span></button><button onClick={() => setNotice('Facebook sign-in is not connected yet.')}><span className="facebook-mark">f</span><span>Facebook</span></button><button aria-label="Continue with Apple" onClick={() => setNotice('Apple sign-in is not connected yet.')}><Apple size={23} fill="currentColor" /></button></div>
-          <p className="signup-prompt"><span>Don’t have an account?</span><Link to="/login">Sign Up</Link></p>
-        </div>
-      </section>
-      <section className="login-visual" style={{ backgroundImage: `url("${loginHouseImage}")` }}>
-        <div className="login-visual-copy"><h2>Your Dream Home Is<br />Just a Login Away</h2><p>Discover the best properties, exclusive deals<br />and a similar way to find your perfect space.</p></div>
-      </section>
-    </main>
+    <div className="overview-card" aria-label="Example support activity overview">
+      <div className="overview-heading">
+        <span className="overview-icon"><Activity size={17} /></span>
+        <span>Support activity overview</span>
+        <span className="live-dot" aria-label="Live sample data" />
+      </div>
+      <div className="overview-summary">
+        <strong>16</strong>
+        <span>Requests resolved<br />this week</span>
+      </div>
+      <div className="chart" aria-hidden="true">
+        {[34, 55, 78, 64, 82].map((height, index) => (
+          <div className="chart-column" key={height}>
+            <i style={{ '--bar-height': `${height}%` }} />
+            <span>{['JAN', 'FEB', 'MAR', 'APR', 'MAY'][index]}</span>
+          </div>
+        ))}
+      </div>
+      <span className="overview-caption"><span /> Sample activity</span>
+    </div>
   )
 }
 
-function DetailPage() {
-  const property = properties[0]
-  const [activeTab, setActiveTab] = useState('Overview')
+function FeatureVisual({ feature }) {
   return (
-    <main className="detail-page page-container">
-      <div className="detail-gallery">
-        <img className="detail-main-image" src={property.image} alt="Luxury villa exterior with pool" />
-        <div className="detail-thumbnails">
-          <img src="https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=500&q=80" alt="Villa living room" />
-          <img src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=500&q=80" alt="Villa interior" />
-          <img src="https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?auto=format&fit=crop&w=500&q=80" alt="Villa kitchen" />
-          <button className="more-photos">+12<br /><small>Photos</small></button>
+    <div className={`feature-visual ${feature.visual}`}>
+      <img src={feature.image} alt={feature.label} loading="lazy" />
+      <span className="feature-image-caption">{feature.label}</span>
+    </div>
+  )
+}
+
+function HomePage() {
+  const [submitted, setSubmitted] = useState(false)
+
+  function handleEnquiry(event) {
+    event.preventDefault()
+    setSubmitted(true)
+  }
+
+  return (
+    <>
+      <main>
+        <section className="hero page-width" id="home">
+          <div className="hero-copy">
+            <p className="eyebrow">Dependable IT for growing teams</p>
+            <h1>Technology support<br />that keeps work<br className="desktop-break" /> moving.</h1>
+            <p className="hero-description">
+              STACKLY IT helps businesses reduce disruption, protect essential systems,
+              and give teams the support they need every day.
+            </p>
+            <div className="hero-actions">
+              <Link className="button button-blue hero-button" to="/services">
+                Explore our services <ArrowRight size={17} />
+              </Link>
+              <Link className="button button-green hero-enquiry-button" to="/enquiry">
+                Start an enquiry <ArrowRight size={17} />
+              </Link>
+            </div>
+          </div>
+          <div className="hero-visual">
+            <SupportOverview />
+          </div>
+        </section>
+
+        <section className="features-section page-width" id="services">
+          <div className="section-kicker">Our key features</div>
+          <div className="features-list">
+            {features.map((feature, index) => (
+              <article className={`feature-row${index % 2 ? ' feature-row-reverse' : ''}`} key={feature.title}>
+                <FeatureVisual feature={feature} />
+                <div className="feature-copy">
+                  <span className="feature-number">0{index + 1}</span>
+                  <h2>{feature.title}</h2>
+                  <p>{feature.description}</p>
+                  <Link to="/enquiry" aria-label={`Enquire about ${feature.title}`}>
+                    Learn more <ArrowRight size={15} />
+                  </Link>
+                </div>
+              </article>
+            ))}
+          </div>
+        </section>
+
+        <section className="information-section page-width" id="about">
+          <div className="information-intro">
+            <p className="eyebrow">A partner you can count on</p>
+            <h2>Our information</h2>
+            <p>
+              We take time to understand your business, recommend practical solutions,
+              and provide dependable support that helps your team work with confidence.
+            </p>
+          </div>
+          <div className="information-layout">
+            <img src="/assets/it-about-team.jpg" alt="Technology support team working together" loading="lazy" />
+            <div className="information-grid">
+              <article className="information-card information-card-featured">
+                <span className="information-number">1</span>
+                <div><h3>Keep systems reliable</h3><p>Proactive support helps your technology run smoothly every day.</p></div>
+              </article>
+              <article className="information-card">
+                <span className="information-number">2</span>
+                <div><h3>Protect business data</h3><p>Practical security measures help safeguard your systems and information.</p></div>
+              </article>
+              <article className="information-card">
+                <span className="information-number">3</span>
+                <div><h3>Plan with confidence</h3><p>Clear advice helps you make better decisions as your business grows.</p></div>
+              </article>
+            </div>
+          </div>
+        </section>
+
+        <section className="process-section page-width">
+          <div className="process-heading">
+            <p className="eyebrow">How we work</p>
+            <h2>Simple support,<br />clear progress.</h2>
+          </div>
+          {steps.map((step, index) => (
+            <article className="process-step" key={step.title}>
+              <span className="step-number">{index + 1}</span>
+              <h3>{step.title}</h3>
+              <p>{step.description}</p>
+            </article>
+          ))}
+        </section>
+
+        <section className="enquiry-section page-width" id="enquiry">
+          <div className="enquiry-copy">
+            <p className="eyebrow">Let's get started</p>
+            <h2>Need IT support<br />that works for you?</h2>
+            <p>Let’s find the right IT support for your business.</p>
+            <Link className="button button-outline" to="/enquiry">
+              Start an enquiry <ArrowRight size={16} />
+            </Link>
+          </div>
+          <form className="enquiry-form" onSubmit={handleEnquiry}>
+            <h3>Tell us what you need</h3>
+            <label>
+              Your name
+              <input name="name" autoComplete="name" placeholder="Enter your name" required />
+            </label>
+            <label>
+              Work email
+              <input name="email" type="email" autoComplete="email" placeholder="Enter your email" required />
+            </label>
+            <label>
+              How can we help?
+              <textarea name="message" rows="3" placeholder="Tell us a little about your IT needs" required />
+            </label>
+            <button className="button button-green" type="submit">
+              Start an enquiry <ArrowRight size={16} />
+            </button>
+            {submitted && (
+              <p className="form-message" role="status">
+                Thanks for reaching out. This demo form is ready to connect to your inbox.
+              </p>
+            )}
+          </form>
+        </section>
+      </main>
+    </>
+  )
+}
+
+const serviceDetails = [
+  {
+    title: 'Managed IT Services',
+    description: 'Proactive support and management to keep your systems running smoothly.',
+    includes: ['24/7 monitoring', 'Helpdesk support'],
+    bestFor: 'Businesses seeking reliable day-to-day IT support.',
+    delivery: 'Ongoing managed service with flexible plans.',
+    icon: MonitorCog,
+    image: '/assets/it-fast-support.jpg',
+  },
+  {
+    title: 'Cybersecurity',
+    description: 'Protect your people, data and reputation.',
+    includes: ['Threat detection', 'Vulnerability review'],
+    bestFor: 'Organisations that need stronger security and compliance.',
+    delivery: 'Tailored solutions with expert setup and monitoring.',
+    icon: Shield,
+    image: '/assets/it-cybersecurity.jpg',
+  },
+  {
+    title: 'Cloud Solutions',
+    description: 'Modern, scalable cloud services to enable growth.',
+    includes: ['Cloud migration', 'Infrastructure management'],
+    bestFor: 'Businesses looking to improve agility and reduce costs.',
+    delivery: 'Project-based or managed service, depending on your needs.',
+    icon: Cloud,
+    image: '/assets/it-cloud.jpg',
+  },
+  {
+    title: 'IT Consulting',
+    description: 'Strategic advice to help you make the right technology decisions.',
+    includes: ['IT strategy and planning', 'Technology assessments'],
+    bestFor: 'Organisations planning growth or change.',
+    delivery: 'Consultative projects with clear outcomes and recommendations.',
+    icon: UsersRound,
+    image: '/assets/it-consulting.jpg',
+  },
+]
+
+function ServicesPage() {
+  const [selectedService, setSelectedService] = useState(0)
+
+  return (
+    <main className="interior-page services-page page-width">
+      <PageTitle>Our Services</PageTitle>
+      <div className="services-layout">
+        <nav className="services-sidebar" aria-label="Services">
+          {serviceDetails.map((service, index) => (
+            <button
+              className={selectedService === index ? 'selected' : ''}
+              key={service.title}
+              type="button"
+              onClick={() => {
+                setSelectedService(index)
+                document.getElementById(`service-${index}`)?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+              }}
+            >
+              {service.title}<ArrowRight size={15} />
+            </button>
+          ))}
+        </nav>
+        <div className="service-cards">
+          {serviceDetails.map((service, index) => {
+            const Icon = service.icon
+            return (
+              <article className="service-card" id={`service-${index}`} key={service.title}>
+                <img className="service-card-image" src={service.image} alt="" loading="lazy" />
+                <div className="service-card-heading">
+                  <Icon size={25} strokeWidth={2} />
+                  <div><h2>{service.title}</h2><p>{service.description}</p></div>
+                </div>
+                <div className="service-card-details">
+                  <div><h3>What it includes</h3>{service.includes.map((item) => <p key={item}>• {item}</p>)}</div>
+                  <div><h3>Best for</h3><p>{service.bestFor}</p></div>
+                  <div><h3>Delivery style</h3><p>{service.delivery}</p></div>
+                </div>
+              </article>
+            )
+          })}
         </div>
       </div>
-      <section className="detail-summary">
-        <div className="detail-heading"><h1>Luxury 3 BHK Villa</h1><span className="property-badge badge-rent">For Rent</span></div>
-        <p className="detail-price">₹ 25,000 <small>/month</small></p>
-        <div className="detail-actions"><Link to="/booking" className="button button-primary">Book Now</Link><Link to="/booking" className="button button-outline">Schedule &amp; Visit</Link></div>
-      </section>
-      <section className="detail-lower">
-        <div className="detail-main-column">
-          <div className="tabs">{['Overview', 'Location', 'Amenities', 'Reviews'].map((tab) => <button key={tab} onClick={() => setActiveTab(tab)} className={activeTab === tab ? 'tab active' : 'tab'}>{tab}</button>)}</div>
-          <p className="detail-description">{activeTab === 'Overview' ? 'Properties built for people to live in, including single-family homes, apartments, townhouses, and condominiums.' : `${activeTab} information for this beautiful villa in Whitefield, Bangalore.`}</p>
-          <h3>Key Features</h3>
-          <ul className="feature-list"><li><Check size={16} /> Spacious living & dining area</li><li><Check size={16} /> Modular kitchen</li><li><Check size={16} /> Private garden</li><li><Check size={16} /> High speed internet</li></ul>
-        </div>
-        <aside className="detail-aside">
-          <div className="map-card"><div className="map-pin"><MapPin size={16} /></div><strong>Whitefield, Bangalore</strong></div>
-          <div className="agent-card"><img className="agent-avatar" src="https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&amp;fit=crop&amp;w=100&amp;q=80" alt="Riya Sharma" /><div><small>Listed by</small><strong>Riya Sharma</strong><span>Property Manager</span></div><a className="button button-outline button-small" href="mailto:hello@homenest.example">Contact</a></div>
-        </aside>
-      </section>
     </main>
   )
 }
 
-function BookingPage() {
-  const [submitted, setSubmitted] = useState(false)
-  return (
-    <main className="booking-page">
-      <div className="booking-steps"><div className="booking-steps-content"><span className="step active"><b>1</b> Booking Details</span><i /><span className="step"><b>2</b> Payment</span><i /><span className="step"><b>3</b> Confirmation</span></div></div>
-      {submitted ? <section className="booking-success"><span><Check size={30} /></span><h1>Details saved</h1><p>Your booking details are ready. Payment integration is needed to confirm this reservation.</p><Link to="/home" className="button button-primary">Back to Home</Link></section> : <div className="booking-layout">
-        <div className="booking-form-column">
-          <h1>Book Your Property</h1>
-          <article className="booking-property-card"><img src="/assets/villa-booking.png" alt="3 BHK Villa" /><div><strong>3BHK Villa</strong><small><MapPin size={12} /> Whitefield, Bangalore</small><small><BedDouble size={12} /> 3 Beds <Bath size={12} /> 3 Baths <SquareCheck size={12} /> 2,400 sqft</small><b><IndianRupee size={16} /> 25,000 <small>/month</small></b></div></article>
-          <h2>Select Booking Dates</h2>
-          <div className="date-fields booking-date-fields"><label><span className="visually-hidden">Check-in Date</span><input aria-label="Check-in Date" type="date" /></label><label><span className="visually-hidden">Checkout Date</span><input aria-label="Checkout Date" type="date" /></label></div>
-          <h2>Add Guest Details <small>(Optional)</small></h2>
-          <div className="date-fields guest-fields"><label>Full Name<input /></label><label>Phone Number<input type="tel" /></label></div>
-          <label className="requests-label">Special Requests<textarea rows="4" /></label>
-        </div>
-        <aside className="booking-summary"><section className="property-summary-card"><h2>Property Summary</h2><dl><div><dt>Property Type</dt><dd>Villa</dd></div><div><dt>Location</dt><dd>Whitefield, Bangalore</dd></div><div><dt>Available From</dt><dd>15 Oct 2025</dd></div><div><dt>Leave Duration</dt><dd>12 Months</dd></div><div><dt>Security Deposit</dt><dd>₹ 2,50,000</dd></div></dl></section><div className="amount-card"><h2>Total Amount</h2><dl><div><dt>Monthly Rent</dt><dd>₹ 25,000</dd></div><div><dt>Security Deposit</dt><dd>₹ 2,50,000</dd></div><div><dt>Service Fee</dt><dd>₹ 5,000</dd></div><div className="total-row"><dt>Total Payable</dt><dd>₹ 2,80,000</dd></div></dl><button className="button button-primary" onClick={() => setSubmitted(true)}>Proceed to Payment <ArrowRight size={15} /></button></div></aside>
-      </div>}
-    </main>
-  )
-}
-
-function DashboardPage() {
-  const [activeTab, setActiveTab] = useState('Upcoming')
-  const bookings = {
-    Upcoming: [
-      { name: '3 BHK Villa', location: 'Whitefield, Bangalore', price: '25,000', beds: '3 Beds', baths: '3 Baths', area: '2,400 sqft', in: '15 Oct 2025', out: '15 Oct 2026', image: '/assets/booking-dashboard-villa.png' },
-      { name: '2 BHK Apartment', location: 'Koramangala, Bangalore', price: '15,000', beds: '2 Beds', baths: '2 Baths', area: '1,200 sqft', in: '01 Nov 2025', out: '31 Oct 2026', image: '/assets/booking-dashboard-apartment.png' },
-    ],
-    'Past Bookings': [
-      { name: '2 BHK Apartment', location: 'Indiranagar, Bangalore', price: '18,000', beds: '2 Beds', baths: '2 Baths', area: '1,250 sqft', in: '01 Oct 2024', out: '30 Sep 2025', image: '/assets/booking-dashboard-apartment.png' },
-      { name: '3 BHK Villa', location: 'Whitefield, Bangalore', price: '24,000', beds: '3 Beds', baths: '3 Baths', area: '2,400 sqft', in: '01 Oct 2023', out: '30 Sep 2024', image: '/assets/booking-dashboard-villa.png' },
-      { name: '2 BHK Apartment', location: 'Koramangala, Bangalore', price: '14,000', beds: '2 Beds', baths: '2 Baths', area: '1,200 sqft', in: '01 Oct 2022', out: '30 Sep 2023', image: '/assets/booking-dashboard-apartment.png' },
-    ],
-    Cancelled: [
-      { name: '3 BHK Villa', location: 'Whitefield, Bangalore', price: '25,000', beds: '3 Beds', baths: '3 Baths', area: '2,400 sqft', in: '01 Dec 2025', out: '30 Nov 2026', image: '/assets/booking-dashboard-villa.png' },
-    ],
-  }
-  const tabs = [
-    { name: 'Upcoming', count: 2 },
-    { name: 'Past Bookings', count: 3 },
-    { name: 'Cancelled', count: 1 },
+function AboutPage() {
+  const achievements = [
+    ['10+', 'Years of combined IT experience'],
+    ['500+', 'Support requests successfully handled'],
+    ['98%', 'Client satisfaction focus'],
+    ['24/7', 'Monitoring and support availability'],
+    ['50+', 'Businesses supported with IT solutions'],
   ]
-  return <main className="dashboard-layout"><aside className="dashboard-sidebar"><Link to="/" className="brand"><span className="brand-mark"><HomeIcon size={38} fill="currentColor" /></span><span className="brand-copy"><strong>Home Nest</strong><small>Find Your Perfect Space</small></span></Link><nav><Link to="/"><HomeIcon size={28} fill="currentColor" /> Dashboard</Link><a className="selected" href="#bookings"><CalendarDays size={29} /> My Bookings</a><a href="#favorites"><Heart size={29} /> Favorites</a><a href="#profile"><UserRound size={29} fill="currentColor" /> Profile</a><a href="#messages"><MessageCircle size={29} fill="currentColor" /> Messages</a><a href="#settings"><Settings size={29} fill="currentColor" /> Settings</a></nav></aside>
-    <section className="dashboard-main"><header className="dashboard-header"><div><h1>My Bookings</h1><p>Track and manage your property bookings</p></div><div className="dashboard-user"><button className="icon-button" aria-label="Favorites"><Heart size={28} /></button><img src="/assets/dashboard-profile.png" alt="Profile" /></div></header>
-      <div className="dashboard-tabs">{tabs.map((tab) => <button onClick={() => setActiveTab(tab.name)} className={activeTab === tab.name ? 'active' : ''} key={tab.name}>{tab.name} ({tab.count})</button>)}</div>
-      <div className="booking-list">{bookings[activeTab].map((entry) => <article className="dashboard-booking-card" key={`${activeTab}-${entry.name}-${entry.in}`}><img src={entry.image} alt={entry.name} /><div className="dashboard-booking-content"><div className="dashboard-booking-title"><h2>{entry.name}</h2><span className={`status-confirmed${activeTab === 'Cancelled' ? ' status-cancelled' : ''}`}>{activeTab === 'Cancelled' ? 'Cancelled' : 'Confirmed'}</span><span className="dashboard-price">{entry.price}/month</span></div><p className="dashboard-location"><MapPin size={19} /> {entry.location}</p><div className="dashboard-facts"><span>{entry.beds}</span><span>{entry.baths}</span><span>{entry.area}</span></div><p className="booking-dates">Check-in {entry.in}<span>Check-out {entry.out}</span></p><div className="dashboard-card-actions"><Link to={`/properties/${entry.name.startsWith('3') ? 'villa' : 'apartment'}`} className="button button-outline button-small">View Details</Link><button className="button button-outline button-small" onClick={() => window.print()}><Download size={18} /> Download Agreement</button></div></div></article>)}</div>
-    </section>
-  </main>
+
+  return (
+    <main className="interior-page about-page page-width">
+      <PageTitle>About Us</PageTitle>
+      <div className="about-stories">
+        <section className="about-story">
+          <img src="/assets/it-about-team.jpg" alt="IT team sharing ideas and planning technology support" loading="lazy" />
+          <div className="about-copy">
+            <h2>Our Vision</h2>
+            <p>
+              Our vision is to make technology simple, secure, and reliable for growing business.
+              We want every team to work with confidence, reduce everyday IT challenges, and use
+              the right digital tools to stay connected, protect important information, improve
+              productivity, and build a stronger, more successful future.
+              <br />We strive to be a technology partner businesses can depend on at every stage.
+            </p>
+          </div>
+        </section>
+        <section className="about-story about-story-reverse">
+          <img src="/assets/it-consulting.jpg" alt="Technology consultant working through a business plan" loading="lazy" />
+          <div className="about-copy mission-copy">
+            <h2>Our Mission</h2>
+            <p>
+              Our mission is to understand each client’s unique needs and provide practical IT support,
+              strong cybersecurity, flexible cloud solutions, and clear technology advice. Through
+              responsive service, honest communication, and long-term partnership, we help businesses
+              keep their systems running smoothly, protect their people and data, and grow with confidence.
+              <br />Our focus is always on delivering real value through dependable technology services.
+            </p>
+          </div>
+        </section>
+      </div>
+      <section className="achievements-section">
+        <h2>Our Achievements</h2>
+        <div className="achievements-grid">
+          {achievements.map(([number, caption], index) => (
+            <article className={index === 4 ? 'achievement-card achievement-featured' : 'achievement-card'} key={number}>
+              <strong>{number}</strong><span>{caption}</span>
+            </article>
+          ))}
+        </div>
+      </section>
+      <div className="about-cta">
+        <p>Built on trust, strengthened by practical technology.</p>
+        <Link className="button button-green" to="/enquiry">Start journey with us <ArrowRight size={16} /></Link>
+      </div>
+    </main>
+  )
 }
 
-function NotFound() {
-  return <main className="not-found"><h1>Page not found</h1><p>We can’t find that page, but your next home might be just around the corner.</p><Link to="/home" className="button button-primary">Return home</Link></main>
+function EnquiryPage() {
+  const [activeService, setActiveService] = useState(0)
+  const navigate = useNavigate()
+  const serviceNames = ['Managed IT', 'Cybersecurity', 'Cloud', 'IT Consulting']
+
+  function handleSubmit(event) {
+    event.preventDefault()
+    const enquiryNumber = `NX-${new Date().getFullYear()}-${String(Math.floor(Math.random() * 10000)).padStart(4, '0')}`
+    navigate('/enquiry/confirmation', { state: { enquiryNumber } })
+  }
+
+  return (
+    <main className="interior-page enquiry-page page-width">
+      <PageTitle>Enquiry</PageTitle>
+      <div className="enquiry-tabs" role="tablist" aria-label="Choose a service">
+        {serviceNames.map((name, index) => (
+          <button
+            aria-selected={activeService === index}
+            className={activeService === index ? 'active' : ''}
+            key={name}
+            onClick={() => setActiveService(index)}
+            role="tab"
+            type="button"
+          >
+            {name}
+          </button>
+        ))}
+      </div>
+      <form className="enquiry-page-form" onSubmit={handleSubmit}>
+        <h2>Enquiry</h2>
+        <div className="enquiry-fields">
+          <label>Full Name<input name="name" autoComplete="name" placeholder="Enter Your Full Name" required /></label>
+          <label>Work email<input name="email" type="email" autoComplete="email" placeholder="Your@company.com" required /></label>
+          <label>Company Name<input name="company" autoComplete="organization" placeholder="Enter Your Company Name" /></label>
+          <label>Phone Number<input name="phone" type="tel" autoComplete="tel" placeholder="e.g. +1 234 567 8900" /></label>
+          <label className="requirements-field">Tell us about requirements<textarea name="requirements" rows="4" placeholder="Please share your requirements, current challenges or any specific information" required /></label>
+        </div>
+        <button className="button submit-enquiry" type="submit">Submit enquiry</button>
+        <p className="privacy-note">We only use your details to respond to this enquiry</p>
+      </form>
+      <p className="reply-promise"><Mail size={20} /> Our team will reply within 1 business day.</p>
+      <section className="next-steps">
+        <h2>What happens next?</h2>
+        <div className="next-steps-grid">
+          {[
+            ['We review your enquiry.', 'Our team will look at your requirements and any relevant details.'],
+            ['We get in touch.', 'We’ll contact you within 1 business day to discuss your needs.'],
+            ['We recommend next steps.', 'We’ll suggest the right solution and outline the next steps.'],
+          ].map(([title, description], index) => (
+            <article key={title}><span>{index + 1}</span><h3>{title}</h3><p>{description}</p></article>
+          ))}
+        </div>
+      </section>
+    </main>
+  )
 }
 
-function App() {
+function EnquiryConfirmationPage() {
+  const { state } = useLocation()
+  const [copyStatus, setCopyStatus] = useState('')
+  const enquiryNumber = state?.enquiryNumber || `NX-${new Date().getFullYear()}-0000`
+
+  async function copyEnquiryNumber() {
+    try {
+      await navigator.clipboard.writeText(enquiryNumber)
+      setCopyStatus('Enquiry number copied.')
+    } catch {
+      setCopyStatus('Could not copy the enquiry number. Please copy it manually.')
+    }
+  }
+
+  return (
+    <main className="interior-page confirmation-page page-width">
+      <section className="confirmation-intro">
+        <span className="confirmation-mark"><CheckCircle2 size={48} fill="currentColor" strokeWidth={2.2} /><Check className="confirmation-tick" size={27} strokeWidth={3} /></span>
+        <h1>Your enquiry has been submitted</h1>
+        <p>Thank you for getting in touch with STACKLY IT. We have received your enquiry<br className="confirmation-break" /> and our team will be in contact with you shortly.</p>
+        <div className="enquiry-number">
+          <span>Your enquiry number</span>
+          <div><strong>{enquiryNumber}</strong><button type="button" onClick={copyEnquiryNumber} aria-label="Copy enquiry number"><Copy size={15} fill="currentColor" /></button></div>
+          {copyStatus && <small role="status">{copyStatus}</small>}
+        </div>
+      </section>
+      <section className="confirmation-next">
+        <h2>What happens next?</h2>
+        <div className="confirmation-current">
+          <h3>We review your enquiry</h3>
+          <p>Our team will review the details you have provided.</p>
+        </div>
+        <div className="next-steps-grid">
+          {[
+            ['We review your enquiry.', 'Our team will review the details you have provided.'],
+            ['We get in touch.', 'We will contact you using your preferred method.'],
+            ['Next steps.', 'We will discuss your requirements and advise on the next steps.'],
+          ].map(([title, description], index) => (
+            <article key={title}><span>{index + 1}</span><h3>{title}</h3><p>{description}</p></article>
+          ))}
+        </div>
+      </section>
+      <aside className="contact-expectation">
+        <MailWarning size={21} />
+        <div><strong>When to expect contact</strong><p>You can expect to hear from us within 1–2 business days.</p></div>
+      </aside>
+    </main>
+  )
+}
+
+function PageTitle({ children }) {
+  return <h1 className="page-title">{children}</h1>
+}
+
+function Footer() {
+  const [subscribed, setSubscribed] = useState(false)
+
+  return (
+    <footer className="site-footer" id="contact">
+      <div className="footer-main page-width">
+        <div className="footer-brand-block">
+          <Link className="brand footer-brand" to="/" aria-label="Stackly IT home">
+            <Brand footer />
+          </Link>
+          <div className="social-links" aria-label="Social links">
+            <a href="#contact" aria-label="X">𝕏</a>
+            <a href="#contact" aria-label="Instagram">◎</a>
+            <a href="#contact" aria-label="LinkedIn">in</a>
+          </div>
+        </div>
+        <div className="footer-links">
+          <h2>Quick links</h2>
+          <Link to="/">Home</Link>
+          <Link to="/services">Services</Link>
+          <Link to="/enquiry">Enquiry</Link>
+          <Link to="/enquiry">Contact Us</Link>
+        </div>
+        <form className="footer-newsletter" onSubmit={(event) => { event.preventDefault(); setSubscribed(true) }}>
+          <label htmlFor="newsletter-email">Your email address</label>
+          <input id="newsletter-email" name="email" type="email" placeholder="Enter Your Email" required />
+          <button className="button newsletter-button" type="submit">{subscribed ? 'Subscribed' : 'Subscribe'}</button>
+          {subscribed && <span className="newsletter-message" role="status">Thanks for subscribing.</span>}
+        </form>
+      </div>
+      <div className="footer-bottom page-width">
+        <span>© 2026 STACKLY IT. All rights reserved.</span>
+        <div><a href="#privacy">Privacy</a><a href="#terms">Terms</a><a href="#cookies">Cookies</a></div>
+      </div>
+    </footer>
+  )
+}
+
+export default function App() {
   return (
     <div className="app-shell">
       <Header />
       <Routes>
         <Route path="/" element={<HomePage />} />
-        <Route path="/home" element={<HomePage />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/properties/:id" element={<DetailPage />} />
-        <Route path="/booking" element={<BookingPage />} />
-        <Route path="/dashboard" element={<DashboardPage />} />
-        <Route path="*" element={<NotFound />} />
+        <Route path="/services" element={<ServicesPage />} />
+        <Route path="/about" element={<AboutPage />} />
+        <Route path="/enquiry" element={<EnquiryPage />} />
+        <Route path="/enquiry/confirmation" element={<EnquiryConfirmationPage />} />
+        <Route path="*" element={<HomePage />} />
       </Routes>
+      <Footer />
     </div>
   )
 }
-
-export default App
